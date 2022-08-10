@@ -21,14 +21,14 @@ proc setCache(file: string; data: Cache) =
   ## Saves the cache to a json file
   file.writeFile data.toJson.`$`
 
-proc checkSiteOn(site: string): Future[bool] {.async.} =
+proc checkSiteUp(site: string): Future[bool] {.async.} =
   let
     client = newAsyncHttpClient()
     res = await client.get site
   result = res.code == Http200
   close client
 
-proc isOn(file, site: string; delay: int): Future[bool] {.async.} =
+proc isUp(file, site: string; delay: int): Future[bool] {.async.} =
   ## Check if site is on and save it to cache
   var cache = getCache file
   let now = getTime()
@@ -39,11 +39,11 @@ proc isOn(file, site: string; delay: int): Future[bool] {.async.} =
   result = cache[site].online
 
   if cache[site].time.fromUnix + delay.milliseconds <= now:
-    result = await checkSiteOn site
+    result = await checkSiteUp site
     cache[site] = (result, now.toUnix)
     file.setCache cache
 
-proc itsOn*(sitesJson, cacheJson: string; delay: int) =
+proc itsUp*(sitesJson, cacheJson: string; delay: int) =
   var sitesLock: Lock
   let sites {.guard: sitesLock.} = sitesJson.readFile.parseJson.to Sites
 
@@ -56,7 +56,7 @@ proc itsOn*(sitesJson, cacheJson: string; delay: int) =
         if sites.hasKey id:
           site = sites[id]
 
-    let on = await cacheJson.isOn(site, delay)
+    let on = await cacheJson.isUp(site, delay)
     resp if on: "1" else: "0"
     
   initLock sitesLock
@@ -70,4 +70,4 @@ proc itsOn*(sitesJson, cacheJson: string; delay: int) =
 
 when isMainModule:
   import pkg/cligen
-  dispatch itsOn
+  dispatch itsup

@@ -5,7 +5,7 @@ author        = "Thiago Navarro"
 description   = "It's on? A bridge to check if site is online without revealing URL"
 license       = "MIT"
 srcDir        = "src"
-bin           = @["itson"]
+bin           = @["itsup"]
 
 binDir = "build"
 

@@ -1,8 +1,8 @@
-# It's On?
+# It's Up?
 
-Is my website online?
+Is my website up?
 
-A tool to check if a website is on without revealing the real URL
+A tool to check if a website is online without revealing the real URL
 
 ## License
 
