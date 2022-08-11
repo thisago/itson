@@ -58,7 +58,8 @@ proc itsUp*(sitesJson, cacheJson: string; delay: int) =
     if site.len > 0:
       let on = await cacheJson.isUp(site, delay)
       resp if on: "1" else: "0"
-    resp "0", Http404
+    else:
+      resp "0", Http404
     
   initLock sitesLock
 
