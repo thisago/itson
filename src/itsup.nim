@@ -55,9 +55,10 @@ proc itsUp*(sitesJson, cacheJson: string; delay: int) =
       withLock sitesLock:
         if sites.hasKey id:
           site = sites[id]
-
-    let on = await cacheJson.isUp(site, delay)
-    resp if on: "1" else: "0"
+    if site.len > 0:
+      let on = await cacheJson.isUp(site, delay)
+      resp if on: "1" else: "0"
+    resp "0", Http404
     
   initLock sitesLock
 
