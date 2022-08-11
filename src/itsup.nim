@@ -2,7 +2,7 @@ from std/tables import Table, `[]=`, `$`, `[]`
 from std/json import parseJson, to, `$`
 import std/jsonutils
 from std/os import fileExists
-from std/httpclient import newAsyncHttpClient, get, Http200, code, close
+from std/httpclient import newAsyncHttpClient, get, code, close
 
 import std/times
 import std/locks
