@@ -61,7 +61,15 @@ proc itsUp*(sitesJson, cacheJson: string; delay: int) =
     
   initLock sitesLock
 
-  let app = newApp()
+  let
+    env = loadPrologueEnv(".env")
+    settings = newSettings(
+      appName = "It's Up",
+      debug = false,
+      port = Port(env.getOrDefault("port", 8080))
+    )
+
+  var app = newApp(settings = settings)
   app.get("/{id}", check)
   run app
 
