@@ -21,14 +21,18 @@ proc setCache(file: string; data: Cache) =
   ## Saves the cache to a json file
   file.writeFile data.toJson.`$`
 
-proc checkSiteUp(site: string): Future[bool] {.async.} =
-  let
-    client = newAsyncHttpClient()
-    res = await client.get site
-  result = res.code == Http200
-  close client
+proc checkSiteUp(site: string; timeout: int): Future[bool] {.async.} =
+  let client = newAsyncHttpClient()
+  client.timeout = timeout
+  try:
+    let res = await client.get site
+    result = res.code == Http200
+    close client
+  except OSError:
+    discard
+    
 
-proc isUp(file, site: string; delay: int): Future[bool] {.async.} =
+proc isUp(file, site: string; delay, timeout: int): Future[bool] {.async.} =
   ## Check if site is on and save it to cache
   var cache = getCache file
   let now = getTime()
@@ -39,11 +43,11 @@ proc isUp(file, site: string; delay: int): Future[bool] {.async.} =
   result = cache[site].online
 
   if cache[site].time.fromUnix + delay.milliseconds <= now:
-    result = await checkSiteUp site
+    result = await checkSiteUp(site, timeout)
     cache[site] = (result, now.toUnix)
     file.setCache cache
 
-proc itsUp*(sitesJson, cacheJson: string; delay: int) =
+proc itsUp*(sitesJson, cacheJson: string; delay, timeout: int) =
   var sitesLock: Lock
   let sites {.guard: sitesLock.} = sitesJson.readFile.parseJson.to Sites
 
@@ -56,7 +60,7 @@ proc itsUp*(sitesJson, cacheJson: string; delay: int) =
         if sites.hasKey id:
           site = sites[id]
     if site.len > 0:
-      let on = await cacheJson.isUp(site, delay)
+      let on = await cacheJson.isUp(site, delay, timeout)
       resp if on: "1" else: "0"
     else:
       resp "0", Http404

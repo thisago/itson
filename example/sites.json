@@ -1,4 +1,5 @@
 {
   "example": "https://example.com",
-  "github": "https://github.com"
+  "github": "https://github.com",
+  "invalid": "https://invalid.domain",
 }
