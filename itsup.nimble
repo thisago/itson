@@ -1,6 +1,6 @@
 # Package
 
-version       = "0.2.0"
+version       = "0.3.0"
 author        = "Thiago Navarro"
 description   = "It's up? A bridge to check if site is up without revealing URL"
 license       = "MIT"
@@ -10,6 +10,7 @@ bin           = @["itsup"]
 binDir = "build"
 
 requires "prologue"
+requires "harpoon"
 requires "cligen"
 
 # Dependencies

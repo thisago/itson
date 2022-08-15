@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.3.0 (Aug 15, 2022)
+
+- Fixed request timeout
+
+---
+
 ## Version 0.2.0 (Aug 14, 2022)
 
 - Added timeout config

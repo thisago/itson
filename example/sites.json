@@ -2,4 +2,6 @@
   "example": "https://example.com",
   "github": "https://github.com",
   "invalid": "https://invalid.domain",
+  "timeout": "http://github-profile-summary-cards.vercel.app",
+  "down": "http://123.1.31.54/",
 }

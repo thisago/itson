@@ -2,12 +2,14 @@ from std/tables import Table, `[]=`, `$`, `[]`
 from std/json import parseJson, to, `$`
 import std/jsonutils
 from std/os import fileExists
-from std/httpclient import newAsyncHttpClient, get, code, close
+from std/uri import parseUri
 
 import std/times
 import std/locks
+import std/[asyncdispatch, net, asyncnet]
 
 import pkg/prologue
+from pkg/harpoon import fetch, newDefaultHeaders
 
 type
   Sites = Table[string, string]
@@ -22,14 +24,14 @@ proc setCache(file: string; data: Cache) =
   file.writeFile data.toJson.`$`
 
 proc checkSiteUp(site: string; timeout: int): Future[bool] {.async.} =
-  let client = newAsyncHttpClient()
-  client.timeout = timeout
+  let socket: Socket = newSocket()
   try:
-    let res = await client.get site
+    let res = socket.fetch(parseUri site, HttpGet, newDefaultHeaders "", timeout = timeout)
     result = res.code == Http200
-    close client
-  except OSError:
+  except:
     discard
+  finally:
+    close socket
     
 
 proc isUp(file, site: string; delay, timeout: int): Future[bool] {.async.} =
