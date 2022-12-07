@@ -16,3 +16,7 @@ requires "cligen"
 # Dependencies
 
 requires "nim >= 1.6.4"
+
+
+task buildRelease, "Builds the release version":
+  exec "nimble --opt:speed --define:release build"
